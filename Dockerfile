@@ -10,9 +10,13 @@ RUN debconf-set-selections /etc/preseed.txt
 RUN apt-get update -y \
  && apt-get install -y libssl-dev libxml2-dev libcurl4-openssl-dev r-base r-base-dev
 
-RUN R -e 'install.packages("plyr")'
-RUN R -e 'install.packages("tidyverse")'
-RUN R -e 'install.packages("stringr")'
-RUN R -e 'install.packages("arm")'
-RUN R -e 'install.packages("msm")'
-RUN R -e 'install.packages("pbapply")'
+# Required packages for run_planscore_model.R
+RUN R -e 'install.packages("plyr")' \
+ && R -e 'install.packages("tidyverse")' \
+ && R -e 'install.packages("stringr")' \
+ && R -e 'install.packages("arm")' \
+ && R -e 'install.packages("msm")' \
+ && R -e 'install.packages("pbapply")'
+
+COPY run_planscore_model.R /usr/local/lib/R/run_planscore_model.R
+COPY run-planscore-model.sh /usr/local/bin/run-planscore-model.sh

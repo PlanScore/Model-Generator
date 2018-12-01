@@ -61,10 +61,6 @@ if (length(args)<3) {
   chamber <- args[3]
 }
 
-d.name <- "Virginia Precinct-Level Results - House of Delegates 2017.csv"
-stpost <- "VA"
-chamber <- "lower"
-
 #load the precinct data and merge the different years together#
 d <- read.csv(d.name, header=T, stringsAsFactors=F)[,-1]
 
