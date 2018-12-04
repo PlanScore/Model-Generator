@@ -15,8 +15,7 @@ RUN R -e 'install.packages("plyr")' \
  && R -e 'install.packages("tidyverse")' \
  && R -e 'install.packages("stringr")' \
  && R -e 'install.packages("arm")' \
- && R -e 'install.packages("msm")' \
- && R -e 'install.packages("pbapply")'
+ && R -e 'install.packages("msm")'
 
 COPY run_planscore_model.R /usr/local/lib/R/run_planscore_model.R
 COPY run-planscore-model.sh /usr/local/bin/run-planscore-model.sh
