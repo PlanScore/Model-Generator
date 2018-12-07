@@ -28,7 +28,7 @@ Required columns include:
 - `precinct` (string) - Precinct name
 - `psid` (string) - Geography ID
 - `v.d` (integer) - Raw Democratic votes for office in question
-- `v.d` (integer) - Raw Republican votes for office in question
+- `v.r` (integer) - Raw Republican votes for office in question
 - `us.pres.d` (integer) - Raw Democratic presidential votes
 - `us.pres.r` (integer) - Raw Republican presidential votes
 - `incumb` (string) - Incumbency, coded `"D"`, `"R"`, `"D;R"` for multiple-district precincts, or empty for open seat
