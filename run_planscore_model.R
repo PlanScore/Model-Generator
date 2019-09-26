@@ -37,6 +37,8 @@ party.pc <- function(var.root, d) {
     rep <- vars[str_detect(vars, paste0(var.root, ".r"))]
     d[,paste0(var.root, ".t")] <- d[,dem] + d[,rep]
     d[,paste0(var.root, ".pc")] <- d[,dem]/(d[,dem] + d[,rep])
+    #remaining code in this function makes sure uncontested races are missing data
+    #so they get dropped from the model estimation
     select <- (d[,paste0(var.root, ".pc")] == 1) | (d[,paste0(var.root, ".pc")] == 0)
     select[is.na(select)] <- FALSE
     d[select,paste0(var.root, ".pc")] <- NA
