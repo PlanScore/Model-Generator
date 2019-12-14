@@ -143,7 +143,7 @@ pred <- ddply(d, .(district), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v.to.h
          v.alt = v.new - (mean(v.new) - 0.5),
          s.alt = v.alt>=0.5)
 
-png(paste0(stpost,"_pred_v_actual_",chamber,".png"), width=8,height=4, 
+png(paste0(stpost,"_pred_v_actual_",chamber,"-districts.png"), width=8,height=4, 
     units="in", res=300)
 par(mar=c(4,4,2,1))
 min.x <- min(pred$v.hat, na.rm=T)
@@ -155,6 +155,34 @@ plot(pred$v.hat, pred$v, xlab="Predicted district vote share",
 abline(a=0, b=1, lwd=2)
 title(main=paste0(stpost, " ", chamber, " prediction validation"))
 rmse <- sqrt(mean((pred$v.hat-pred$v)^2, na.rm=T))
+text(min.x+(max.x-min.x)/10, max.y-(max.y-min.y)/10, pos=4, 
+       paste0("RMSE = ", round(rmse, 3)))
+dev.off()
+
+##second model check##
+prec_pred <- ddply(d, .(precinct), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v.to.hat),
+              v=sum(v.d)/(100*sum(v.t))) %>%
+  mutate(precinct=as.numeric(precinct)) %>%
+  arrange(precinct) %>%
+  mutate(v.new=ifelse(is.na(v), v.hat, v),
+         s=v.new>=0.5,
+         v.alt = v.new - (mean(v.new) - 0.5),
+         s.alt = v.alt>=0.5)
+
+png(paste0(stpost,"_pred_v_actual_",chamber,".png"), width=8,height=4, 
+    units="in", res=300)
+par(mar=c(4,4,2,1))
+min.x <- min(prec_pred$v.hat, na.rm=T)
+min.y <- min(prec_pred$v, na.rm=T)
+max.x <- max(prec_pred$v.hat, na.rm=T)
+max.y <- max(prec_pred$v, na.rm=T)
+plot(prec_pred$v.hat, prec_pred$v, xlab="Predicted precinct vote share", 
+     ylab="Actual precinct vote share", pch=20, col='#00000020')
+abline(a=0, b=1, lwd=2)
+points(pred$v.hat, pred$v, pch=19, col='black', cex=1.2)
+points(pred$v.hat, pred$v, pch=19, col='white', cex=0.8)
+title(main=paste0(stpost, " ", chamber, " prediction validation"))
+rmse <- sqrt(mean((prec_pred$v.hat-prec_pred$v)^2, na.rm=T))
 text(min.x+(max.x-min.x)/10, max.y-(max.y-min.y)/10, pos=4, 
        paste0("RMSE = ", round(rmse, 3)))
 dev.off()
