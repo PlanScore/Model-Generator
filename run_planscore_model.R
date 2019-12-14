@@ -133,8 +133,9 @@ incR <- Reduce(function(x,y)
   merge(x, y, by=c("cntyname","precinct","psid")), incR)
 write.csv(incR, paste0(stpost,"_precinct_model_",chamber,"_incR.csv"))
 
-##model check##
-pred <- ddply(d, .(district), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v.to.hat),
+## predictions for districts and precincts ##
+
+dist_pred <- ddply(d, .(district), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v.to.hat),
               v=sum(v.d)/(100*sum(v.t))) %>%
   mutate(district=as.numeric(district)) %>%
   arrange(district) %>%
@@ -143,23 +144,6 @@ pred <- ddply(d, .(district), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v.to.h
          v.alt = v.new - (mean(v.new) - 0.5),
          s.alt = v.alt>=0.5)
 
-png(paste0(stpost,"_pred_v_actual_",chamber,"-districts.png"), width=8,height=4, 
-    units="in", res=300)
-par(mar=c(4,4,2,1))
-min.x <- min(pred$v.hat, na.rm=T)
-min.y <- min(pred$v, na.rm=T)
-max.x <- max(pred$v.hat, na.rm=T)
-max.y <- max(pred$v, na.rm=T)
-plot(pred$v.hat, pred$v, xlab="Predicted district vote share", 
-     ylab="Actual district vote share", pch=19)
-abline(a=0, b=1, lwd=2)
-title(main=paste0(stpost, " ", chamber, " prediction validation"))
-rmse <- sqrt(mean((pred$v.hat-pred$v)^2, na.rm=T))
-text(min.x+(max.x-min.x)/10, max.y-(max.y-min.y)/10, pos=4, 
-       paste0("RMSE = ", round(rmse, 3)))
-dev.off()
-
-##second model check##
 prec_pred <- ddply(d, .(precinct), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v.to.hat),
               v=sum(v.d)/(100*sum(v.t))) %>%
   mutate(precinct=as.numeric(precinct)) %>%
@@ -169,6 +153,8 @@ prec_pred <- ddply(d, .(precinct), summarise, v.hat=sum(v.pc.hat*v.to.hat)/sum(v
          v.alt = v.new - (mean(v.new) - 0.5),
          s.alt = v.alt>=0.5)
 
+## visual model check ##
+
 png(paste0(stpost,"_pred_v_actual_",chamber,".png"), width=8,height=4, 
     units="in", res=300)
 par(mar=c(4,4,2,1))
@@ -176,22 +162,24 @@ min.x <- min(prec_pred$v.hat, na.rm=T)
 min.y <- min(prec_pred$v, na.rm=T)
 max.x <- max(prec_pred$v.hat, na.rm=T)
 max.y <- max(prec_pred$v, na.rm=T)
-plot(prec_pred$v.hat, prec_pred$v, xlab="Predicted precinct vote share", 
-     ylab="Actual precinct vote share", pch=20, col='#00000020')
+plot(prec_pred$v.hat, prec_pred$v, xlab="Predicted vote share", 
+     ylab="Actual vote share", pch=20, col='#00000020')
 abline(a=0, b=1, lwd=2)
-points(pred$v.hat, pred$v, pch=19, col='black', cex=1.2)
-points(pred$v.hat, pred$v, pch=19, col='white', cex=0.8)
+points(dist_pred$v.hat, dist_pred$v, pch=19, col='black', cex=1.2)
+points(dist_pred$v.hat, dist_pred$v, pch=19, col='white', cex=0.8)
 title(main=paste0(stpost, " ", chamber, " prediction validation"))
 rmse <- sqrt(mean((prec_pred$v.hat-prec_pred$v)^2, na.rm=T))
-text(min.x+(max.x-min.x)/10, max.y-(max.y-min.y)/10, pos=4, 
-       paste0("RMSE = ", round(rmse, 3)))
+legend("bottomright", bty='n', paste0("RMSE = ", round(rmse, 3)))
+legend("topleft", bty='n',
+    legend=c("Precincts", "Districts"), pch=c(20, 21),
+    col=c('#00000040', 'black'), pt.bg=c('white', 'white'), pt.cex=c(1, 1.2))
 dev.off()
 
 #EG#
-print(paste0("Efficiency gap: ", round(mean(pred$s) - 0.5 - 2*(mean(pred$v.new) - 0.5), 3)))
+print(paste0("Efficiency gap: ", round(mean(dist_pred$s) - 0.5 - 2*(mean(dist_pred$v.new) - 0.5), 3)))
 
 #Mean Median#
-print(paste0("Mean median: ", round(median(pred$v.new) - mean(pred$v.new), 3)))
+print(paste0("Mean median: ", round(median(dist_pred$v.new) - mean(dist_pred$v.new), 3)))
 
 #Gelman-King Bias#
-print(paste0("Gelman-King bias: ", round(mean(pred$s.alt) - 0.5, 3)))
+print(paste0("Gelman-King bias: ", round(mean(dist_pred$s.alt) - 0.5, 3)))
