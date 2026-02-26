@@ -11,6 +11,8 @@ library(parallel)
 ##separate intercepts and coefficients for each election cycle that are part of ##
 ##each multilevel model.                                                        ##
 
+output.folder <- "XXXXXX" #DESIGNATE A LOCATION TO SAVE OUTPUT
+
 ##############################################
 ##CONGRESS: 2024 PRESIDENTIAL VOTE AVAILABLE##
 ##############################################
@@ -18,7 +20,8 @@ library(parallel)
 ##CONGRESS: YES 2024 PVOTE: LOAD AND FORMAT DATA##
 
 #2024 presidential vote data for the 2022 and 2024 elections#
-p24 <- read_csv("/Users/ericmcghee/Dropbox/Redistricting/PlanScore/Data/Warshaw Data/pres_vote_by_district_2020_2024.csv") %>%
+setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
+p24 <- read_csv("pres_vote_by_district_2020_2024.csv") %>%
   mutate(cycle=2022,
          dpres24=100*d24/(d24+r24)) %>%
   dplyr::select(cycle, stpost, district, dpres24)
@@ -26,7 +29,7 @@ p24 <- rbind.fill(p24,
                   p24 %>% mutate(cycle=2024))
 
 #congressional outcome data#
-setwd("/Users/ericmcghee/Dropbox/Redistricting/PlanScore/Data/Warshaw Data/")
+setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
 d.cong <- read_csv("congress_elections_imputations_2025.csv")[,-1] %>%
   filter(cycle >= 2012) %>%
   mutate(district=parse_number(str_sub(stcd, -2, -1))) %>%
@@ -40,12 +43,10 @@ d.cong <- read_csv("congress_elections_imputations_2025.csv")[,-1] %>%
   ungroup() %>%
   mutate(stateabrev=tolower(stateabrev)) %>%
   mutate(dpres=ifelse(stateabrev %in% c("ky","sd") & cycle %in% 2020, dpres16, dpres)) %>% #replace missing 2020 presidential vote with 2016
-  dplyr::rename(distz=stcd)
-
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-d.cong <- d.cong %>% 
+  dplyr::rename(distz=stcd) %>%
   mutate(dpres_mn=dpres-mean(dpres)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.5149009
 
+setwd(output.folder)
 d.cong <- sample_frac(d.cong)
 n <- 10
 nr <- nrow(d.cong)
@@ -57,7 +58,7 @@ write_csv(d.cong, "cong_2011_2024_crossval_cycles_2024data.csv") #set up the fil
 ##values and when a state has 2024 presidential vote data available for      ##
 ##predictions in the latest redistricting cycle.                             ##
 
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 d.cong <- read_csv("cong_2011_2024_crossval_cycles_2024data.csv") %>%
   filter(!is.na(incumb))
 
@@ -87,7 +88,7 @@ proc.time() - start
 saveRDS(m, "full_model_2025B_incumbency_congress.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 m <- readRDS("full_model_2025B_incumbency_congress.rds")
 
 #population level effects#
@@ -115,7 +116,7 @@ write.csv(E, "E_matrix_full-2025B-incumbency-congress.csv")
 ##and a state has 2024 presidential vote data available for predictions in the##
 ##latest redistricting cycle.                                                 ##
 
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 d.cong <- read_csv("cong_2011_2024_crossval_cycles_2024data.csv") %>%
   filter(!is.na(incumb))
 start <- proc.time()
@@ -139,7 +140,7 @@ proc.time() - start
 saveRDS(m, "full_model_2025B_openseat_congress.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 m <- readRDS("full_model_2025B_openseat_congress.rds")
 
 #population level effects#
@@ -169,7 +170,8 @@ write.csv(E, "E_matrix_full-2025B-openseat-congress.csv")
 ##CONGRESS: NO 2024 PVOTE: LOAD AND FORMAT DATA##
 
 #2020 presidential vote data for the 2022 and 2024 elections#
-p24 <- read_csv("/Users/ericmcghee/Dropbox/Redistricting/PlanScore/Data/Warshaw Data/pres_vote_by_district_2020_2024.csv") %>%
+setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
+p24 <- read_csv("pres_vote_by_district_2020_2024.csv") %>%
   mutate(cycle=2022,
          dpres20=d20/(d20+r20)) %>%
   dplyr::select(cycle, stpost, district, dpres20)
@@ -177,7 +179,7 @@ p24 <- rbind.fill(p24,
                   p24 %>% mutate(cycle=2024))
 
 #congressional outcome data#
-setwd("/Users/ericmcghee/Dropbox/Redistricting/PlanScore/Data/Warshaw Data/")
+setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
 d.cong <- read_csv("congress_elections_imputations_2025.csv")[,-1] %>%
   filter(cycle >= 2012) %>%
   mutate(district=parse_number(str_sub(stcd, -2, -1))) %>%
@@ -191,12 +193,10 @@ d.cong <- read_csv("congress_elections_imputations_2025.csv")[,-1] %>%
   mutate(stateabrev=tolower(stateabrev)) %>%
   mutate(dpres=ifelse(stateabrev %in% c("ky","sd") & cycle %in% 2020, dpres16, 
                       ifelse(cycle %in% c(2022, 2024), dpres20, dpres))) %>%
-  dplyr::rename(distz=stcd)
-
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-d.cong <- d.cong %>%
+  dplyr::rename(distz=stcd) %>%
   mutate(dpres_mn=dpres-mean(dpres)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.5226811
 
+setwd(output.folder)
 d.cong <- sample_frac(d.cong)
 n <- 10
 nr <- nrow(d.cong)
@@ -208,7 +208,7 @@ write_csv(d.cong, "cong_2011_2024_crossval_cycles.csv")
 ##values and when a state only has 2020 data available for predictions in the##
 ##latest redistricting cycle.                                                ##
 
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 d.cong <- read_csv("cong_2011_2024_crossval_cycles.csv") %>%
   filter(!is.na(incumb))
 
@@ -238,7 +238,7 @@ proc.time() - start
 saveRDS(m, "full_model_2025A_incumbency_congress.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 m <- readRDS("full_model_2025A_incumbency_congress.rds")
 
 #population level effects#
@@ -266,7 +266,7 @@ write.csv(E, "E_matrix_full-2025A-incumbency-congress.csv")
 ##and a state only has 2020 presidential vote data available for predictions  ##
 ##in the latest redistricting cycle.                                          ##
 
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 d.cong <- read_csv("cong_2011_2024_crossval_cycles.csv") %>%
   filter(!is.na(incumb))
 start <- proc.time()
@@ -290,7 +290,7 @@ proc.time() - start
 saveRDS(m, "full_model_2025A_openseat_congress.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 m <- readRDS("full_model_2025A_openseat_congress.rds")
 
 #population level effects#
@@ -312,138 +312,4 @@ E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error 
 
 write.csv(C, "C_matrix_full-2025A-openseat-congress.csv")
 write.csv(E, "E_matrix_full-2025A-openseat-congress.csv")
-
-######################
-##STATE LEGISLATURES##
-######################
-
-##STATE LEG: LOAD AND FORMAT DATA##
-#state legislative outcome data, lower house
-d.lower <- read_csv("statehouse_elections_imputations_2025.csv")[,-1] %>%
-  filter(cycle>=2011) %>%
-  mutate(winner_dem=party_winner=="d",
-         dpres=pres_dem_prop)
-#state legislative outcome data, upper house
-d.upper <- read_csv("statesenate_elections_imputations_2025.csv")[,-1] %>%
-  filter(cycle>=2011) %>%
-  mutate(winner_dem=party_winner=="d",
-         dpres=pres_dem_prop)
-
-d.leg <- rbind.fill(d.lower, d.upper) %>%
-  mutate(dpres_mn=dpres-mean(dpres)) #mean(dpres)=0.4949748
-
-d.leg <- sample_frac(d.leg)
-n <- 10
-nr <- nrow(d.leg)
-d.leg$grp <- c(1:n) * rep(1, nr)
-write_csv(d.leg, "leg_2011_2024_crossval_cycles.csv")
-
-##STATE LEG: FULL MODEL WITH INCUMBENCY##
-##This model is engaged on PlanScore when users choose to identify incumbency##
-##values. (Only 2020 presidential vote data are available for state          ##
-##legislatures in the latest redistricting cycle.)                           ##
-
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-d.leg <- read_csv("leg_2011_2024_crossval_cycles.csv") %>%
-  filter(!is.na(incumb))
-start <- proc.time()
-m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
-              (1 + dpres_mn + incumb || stateabrev) +
-              (1 + dpres_mn + incumb | cycle)), 
-         data=d.leg, 
-         prior=c(set_prior("normal(0.78,0.2)",class="b",coef="dpres_mn"),
-                 set_prior("normal(0.05,0.05)",class="b",coef="incumb"),
-                 set_prior("normal(0.49,0.1)",class="Intercept"),
-                 set_prior("student_t(3, 0.03, 0.1)", class="sd",coef="Intercept",
-                           group="cycle"),
-                 set_prior("student_t(3, 0.14, 0.1)", class="sd",coef="dpres_mn",
-                           group="cycle"),
-                 set_prior("student_t(3, 0.02, 0.1)", class="sd",coef="incumb",
-                           group="cycle"),
-                 set_prior("student_t(3, 0.02, 0.1)", class="sd",coef="Intercept",
-                           group="stateabrev"),
-                 set_prior("student_t(3, 0.11, 0.1)", class="sd",coef="dpres_mn",
-                           group="stateabrev"),
-                 set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
-                           group="stateabrev")),
-         cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
-proc.time() - start
-saveRDS(m, "full_model_2025A_incumbency_statelege.rds")
-
-##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-m <- readRDS("full_model_2025A_incumbency_statelege.rds")
-
-#population level effects#
-cycle.select <- function(i, mat) {
-  yr <- sample(seq(2012,2024,by=2), 1)
-  rows <- rownames(mat)
-  mat[rows[str_detect(rows, as.character(yr))],i]
-}
-
-cycles <- paste0("cycle\\[", rownames(ranef(m)$cycles)) #selector for cycle random effects
-states <- paste0("stateabrev\\[", rownames(ranef(m)$stateabrev)) #selector for state random effects
-C <- t(posterior_samples(m, pars=c("^b",states,cycles), as.matrix=T)) #coefficient matrix
-
-sigma <- VarCorr(m, summary=F)$residual__$sd
-nsims <- dim(C)[2]
-ndists <- 500
-
-E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
-
-write.csv(C, "C_matrix_full-2025A-incumbency-statelege.csv")
-write.csv(E, "E_matrix_full-2025A-incumbency-statelege.csv")
-
-##STATE LEG: SMALLER MODEL WITH PRES VOTE ONLY##
-##This model is engaged on PlanScore when users choose to leave all seats open.##
-##(Only 2020 presidential vote data are available for state legislatures in the##
-##latest redistricting cycle.)                                                 ##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-d.leg <- read_csv("leg_2011_2024_crossval_cycles.csv") %>%
-  filter(!is.na(incumb))
-
-start <- proc.time()
-m <- brm(bf(dem_share_imputed ~ dpres_mn +
-              (1 + dpres_mn || stateabrev) +
-              (1 + dpres_mn | cycle)), 
-         data=d.leg, 
-         prior=c(set_prior("normal(0.9,0.2)",class="b",coef="dpres_mn"),
-                 set_prior("normal(0.5,0.1)",class="Intercept"),
-                 set_prior("student_t(3, 0.04, 0.1)", class="sd",coef="Intercept",
-                           group="cycle"),
-                 set_prior("student_t(3, 0.14, 0.1)", class="sd",coef="dpres_mn",
-                           group="cycle"),
-                 set_prior("student_t(3, 0.03, 0.1)", class="sd",coef="Intercept",
-                           group="stateabrev"),
-                 set_prior("student_t(3, 0.11, 0.1)", class="sd",coef="dpres_mn",
-                           group="stateabrev")),
-         cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
-proc.time() - start
-saveRDS(m, "full_model_2025A_openseat_statelege.rds")
-
-##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-m <- readRDS("full_model_2025A_openseat_statelege.rds")
-
-#population level effects#
-cycle.select <- function(i, mat) {
-  yr <- sample(seq(2012,2024,by=2), 1)
-  rows <- rownames(mat)
-  mat[rows[str_detect(rows, as.character(yr))],i]
-}
-
-cycles <- paste0("cycle\\[", rownames(ranef(m)$cycles)) #selector for cycle random effects
-states <- paste0("stateabrev\\[", rownames(ranef(m)$stateabrev)) #selector for state random effects
-C <- t(posterior_samples(m, pars=c("^b",states,cycles), as.matrix=T)) #creating C matrix
-
-sigma <- VarCorr(m, summary=F)$residual__$sd
-nsims <- dim(C)[2]
-ndists <- 500
-
-E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
-
-write.csv(C, "C_matrix_full-2025A-openseat-statelege.csv")
-write.csv(E, "E_matrix_full-2025A-openseat-statelege.csv")
 

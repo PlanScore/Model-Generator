@@ -12,12 +12,15 @@ library(parallel)
 ##over time are captured with separate random intercepts and coefficients ##
 ##for each election cycle.                                                ##
 
+output.folder <- "XXXXXX" #DESIGNATE A LOCATION TO SAVE OUTPUT
+
 ######################
 ##STATE LEGISLATURES##
 ######################
 
 ##STATE LEG: LOAD AND FORMAT DATA##
 #state legislative outcome data, lower house
+setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
 d.lower <- read_csv("statehouse_elections_imputations_2025.csv")[,-1] %>%
   filter(cycle>=2011) %>%
   mutate(winner_dem=party_winner=="d",
@@ -29,20 +32,21 @@ d.upper <- read_csv("statesenate_elections_imputations_2025.csv")[,-1] %>%
          dpres=pres_dem_prop)
 
 d.leg <- rbind.fill(d.lower, d.upper) %>%
-  mutate(dpres_mn=dpres-mean(dpres)) #mean(dpres)=0.4949748
+  mutate(dpres_mn=dpres-mean(dpres)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.4949748
 
+setwd(output.folder)
 d.leg <- sample_frac(d.leg)
 n <- 10
 nr <- nrow(d.leg)
 d.leg$grp <- c(1:n) * rep(1, nr)
-write_csv(d.leg, "leg_2011_2024_crossval_cycles.csv")
+write_csv(d.leg, "leg_2011_2024_crossval_cycles.csv") #set up the file for cross-validation
 
 ##STATE LEG: FULL MODEL WITH INCUMBENCY##
 ##This model is engaged on PlanScore when users choose to identify incumbency##
 ##values. (Only 2020 presidential vote data are available for state          ##
 ##legislatures in the latest redistricting cycle.)                           ##
 
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 d.leg <- read_csv("leg_2011_2024_crossval_cycles.csv") %>%
   filter(!is.na(incumb))
 start <- proc.time()
@@ -68,11 +72,11 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
          warmup=2000, iter=6000, refresh=10, thin=16)
 proc.time() - start
-saveRDS(m, "full_model_2025A_incumbency_statelege.rds")
+saveRDS(m, "full_model_2025A_incumbency_stateleg.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-m <- readRDS("full_model_2025A_incumbency_statelege.rds")
+setwd(output.folder)
+m <- readRDS("full_model_2025A_incumbency_stateleg.rds")
 
 #population level effects#
 cycle.select <- function(i, mat) {
@@ -91,14 +95,14 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025A-incumbency-statelege.csv")
-write.csv(E, "E_matrix_full-2025A-incumbency-statelege.csv")
+write.csv(C, "C_matrix_full-2025A-incumbency-stateleg.csv")
+write.csv(E, "E_matrix_full-2025A-incumbency-stateleg.csv")
 
 ##STATE LEG: SMALLER MODEL WITH PRES VOTE ONLY##
 ##This model is engaged on PlanScore when users choose to leave all seats open.##
 ##(Only 2020 presidential vote data are available for state legislatures in the##
 ##latest redistricting cycle.)                                                 ##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
+setwd(output.folder)
 d.leg <- read_csv("leg_2011_2024_crossval_cycles.csv") %>%
   filter(!is.na(incumb))
 
@@ -120,11 +124,11 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
          warmup=2000, iter=6000, refresh=10, thin=16)
 proc.time() - start
-saveRDS(m, "full_model_2025A_openseat_statelege.rds")
+saveRDS(m, "full_model_2025A_openseat_stateleg.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
-setwd("/Users/ericmcghee/Library/CloudStorage/Dropbox/Redistricting/PlanScore/Redistricting Modeling")
-m <- readRDS("full_model_2025A_openseat_statelege.rds")
+setwd(output.folder)
+m <- readRDS("full_model_2025A_openseat_stateleg.rds")
 
 #population level effects#
 cycle.select <- function(i, mat) {
@@ -143,6 +147,6 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025A-openseat-statelege.csv")
-write.csv(E, "E_matrix_full-2025A-openseat-statelege.csv")
+write.csv(C, "C_matrix_full-2025A-openseat-stateleg.csv")
+write.csv(E, "E_matrix_full-2025A-openseat-stateleg.csv")
 
