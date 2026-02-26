@@ -18,6 +18,21 @@
 
 ## Methodology: Models with 2024 Presidential Vote
 
+This is the model we use when we have the latest geographic election
+data for a particular state. When we do not have such data, we use a
+slightly different model described in README_model_no_2024_pvote.md. At
+present we only have fully updated data for Congress, so only
+congressional results are reported on this methods page. See the
+companion page for state legislative results, and for the results of a
+modified version of the congressional model for states that do not have
+fully updated data.
+
+To run this model for Congress, use the code in
+planscore_models_congress.R in the section headed “CONGRESS: 2024
+PRESIDENTIAL VOTE AVAILABLE.” The code asks the user at the top of the
+file to designate a pathname for saving output. The code otherwise
+automatically draws the necessary data from this github page.
+
 ### The Big Picture
 
 We use the correlation between the presidential vote on the one hand and
@@ -32,14 +47,6 @@ missed the actual outcomes of past elections, including the degree to
 which partisan tides have changed party performance from one election to
 the next. This enables us to generate the most accurate, data-driven,
 and transparent prediction we can.
-
-This is the model we use when we have the latest geographic election
-data for a particular state. When we do not have such data, we use a
-slightly different model described here. At present we only have fully
-updated data for Congress, so only congressional results are reported on
-this methods page. See the companion page for state legislative results,
-and for the results of a modified version of the congressional model for
-states that do not have fully updated data.
 
 ### The Details
 
@@ -155,7 +162,7 @@ partisan tides that occurred over the last decade.
 
 Full results for our four separate models can be found below.
 
-    ## ### Congress prediction model with incumbency ($k=2$)
+### Congress prediction model with incumbency ($k=2$)
 
 | Term | Estimate | 95% Credible Interval |
 |:---|---:|---:|
@@ -176,7 +183,7 @@ Full results for our four separate models can be found below.
 | Intercept – Incumbency ($\rho\,\sigma_{\beta_{0c}}\sigma_{\beta_{2c}}$) | -0.37 | \[-0.87, 0.34\] |
 | Pres. vote – Incumbency ($\rho\,\sigma_{\beta_{1c}}\sigma_{\beta_{2c}}$) | -0.59 | \[-0.94, 0.16\] |
 
-    ## ### Congress prediction model without incumbency ($k=1$)
+### Congress prediction model without incumbency ($k=1$)
 
 | Term | Estimate | 95% Credible Interval |
 |:---|---:|---:|
@@ -192,5 +199,6 @@ Full results for our four separate models can be found below.
 | **CYCLE-LEVEL** *Correlations* |  |  |
 | Intercept – Pres. vote ($\rho\,\sigma_{\beta_{0c}}\sigma_{\beta_{1c}}$) | -0.55 | \[-0.95, 0.29\] |
 
-    ## 
-    ## > Note: Model estimated in brms for R. Model based on 4 MCMC chains run for 6000 iterations each with a 2000 iteration warm-up. All model parameters converged well with $\hat{R}\le 1.01$.
+> Note: Model estimated in brms for R. Model based on 4 MCMC chains run
+> for 6000 iterations each with a 2000 iteration warm-up. All model
+> parameters converged well with $\hat{R}\le 1.01$.

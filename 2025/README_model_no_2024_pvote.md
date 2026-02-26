@@ -18,7 +18,19 @@
 
 ## Methodology: Models without 2024 Presidential Vote
 
-### The Big Picture
+This is the model we use when we do not have the latest geographic
+election data for a particular state. When we do have such data, we use
+a slightly different model described in README_model_with_2024_pvote.md.
+
+To run this model for Congress, use the code in
+planscore_models_congress.R in the section headed “CONGRESS: 2024
+PRESIDENTIAL VOTE NOT AVAILABLE.” To run the model for state
+legislatures, use the code in planscore_models_state_leg.R. In both
+cases, the code asks the user at the top of the file to designate a
+pathname for saving output. The code otherwise automatically draws the
+necessary data from this github page.
+
+### The Models: The Big Picture
 
 We use the correlation between the presidential vote on the one hand and
 state legislative or congressional votes on the other to predict how new
@@ -32,10 +44,6 @@ missed the actual outcomes of past elections, including the degree to
 which partisan tides have changed party performance from one election to
 the next. This enables us to generate the most accurate, data-driven,
 and transparent prediction we can.
-
-This is the model we use when we do not have the latest geographic
-election data for a particular state. When we do have such data, we use
-a slightly different model described here.
 
 ### The Details
 
@@ -159,7 +167,7 @@ partisan tides that occurred over the last decade.
 
 Full results for our four separate models can be found below.
 
-    ## ### Congress prediction model with incumbency ($k=2$)
+### Congress prediction model with incumbency ($k=2$)
 
 | Term | Estimate | 95% Credible Interval |
 |:---|---:|---:|
@@ -180,7 +188,7 @@ Full results for our four separate models can be found below.
 | Intercept – Incumbency ($\rho\,\sigma_{\beta_{0c}}\sigma_{\beta_{2c}}$) | -0.15 | \[-0.73, 0.53\] |
 | Pres. vote – Incumbency ($\rho\,\sigma_{\beta_{1c}}\sigma_{\beta_{2c}}$) | -0.55 | \[-0.94, 0.25\] |
 
-    ## ### Congress prediction model without incumbency ($k=1$)
+### Congress prediction model without incumbency ($k=1$)
 
 | Term | Estimate | 95% Credible Interval |
 |:---|---:|---:|
@@ -196,10 +204,11 @@ Full results for our four separate models can be found below.
 | **CYCLE-LEVEL** *Correlations* |  |  |
 | Intercept – Pres. vote ($\rho\,\sigma_{\beta_{0c}}\sigma_{\beta_{1c}}$) | -0.50 | \[-0.93, 0.35\] |
 
-    ## 
-    ## > Note: Model estimated in brms for R. Model based on 4 MCMC chains run for 6000 iterations each with a 2000 iteration warm-up. All model parameters converged well with $\hat{R}\le 1.01$.
+> Note: Model estimated in brms for R. Model based on 4 MCMC chains run
+> for 6000 iterations each with a 2000 iteration warm-up. All model
+> parameters converged well with $\hat{R}\le 1.01$.
 
-    ## ### State legislature prediction model with incumbency ($k=2$)
+### State legislature prediction model with incumbency ($k=2$)
 
 | Term | Estimate | 95% Credible Interval |
 |:---|---:|---:|
@@ -220,10 +229,11 @@ Full results for our four separate models can be found below.
 | Intercept – Incumbency ($\rho\,\sigma_{\beta_{0c}}\sigma_{\beta_{2c}}$) | 0.20 | \[-0.50, 0.77\] |
 | Pres. vote – Incumbency ($\rho\,\sigma_{\beta_{1c}}\sigma_{\beta_{2c}}$) | -0.75 | \[-0.97, -0.21\] |
 
-    ## 
-    ## > Note: Model estimated in brms for R. Model based on 4 MCMC chains run for 6000 iterations each with a 2000 iteration warm-up. All model parameters converged well with $\hat{R}\le 1.01$.
+> Note: Model estimated in brms for R. Model based on 4 MCMC chains run
+> for 6000 iterations each with a 2000 iteration warm-up. All model
+> parameters converged well with $\hat{R}\le 1.01$.
 
-    ## ### State legislature prediction model without incumbency ($k=1$)
+### State legislature prediction model without incumbency ($k=1$)
 
 | Term | Estimate | 95% Credible Interval |
 |:---|---:|---:|
@@ -239,5 +249,6 @@ Full results for our four separate models can be found below.
 | **CYCLE-LEVEL** *Correlations* |  |  |
 | Intercept – Pres. vote ($\rho\,\sigma_{\beta_{0c}}\sigma_{\beta_{1c}}$) | -0.40 | \[-0.87, 0.33\] |
 
-    ## 
-    ## > Note: Model estimated in brms for R. Model based on 4 MCMC chains run for 6000 iterations each with a 2000 iteration warm-up. All model parameters converged well with $\hat{R}\le 1.01$.
+> Note: Model estimated in brms for R. Model based on 4 MCMC chains run
+> for 6000 iterations each with a 2000 iteration warm-up. All model
+> parameters converged well with $\hat{R}\le 1.01$.
