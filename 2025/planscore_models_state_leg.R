@@ -20,7 +20,7 @@ output.folder <- "XXXXXX" #DESIGNATE A LOCATION TO SAVE OUTPUT
 
 ##STATE LEG: LOAD AND FORMAT DATA##
 #state legislative outcome data, lower house
-setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
+setwd("/vol/")
 d.lower <- read_csv("statehouse_elections_imputations_2026.csv")[,-1] %>%
   filter(cycle>=2011) %>%
   mutate(winner_dem=party_winner=="d",

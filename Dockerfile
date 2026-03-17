@@ -14,10 +14,10 @@ RUN apt-get update -y \
 
 # Required packages for run_planscore_model.R
 RUN R -e '\
-    for (pkg in c("Rcpp", "plyr", "tidyverse", "stringr", "arm", "mvtnorm", "msm")) { \
+    for (pkg in c("Rcpp", "tidyverse", "plyr", "parallel", "dplyr", "brms")) { \
         install.packages(pkg, repos="https://cloud.r-project.org"); \
         if (!require(pkg, character.only=TRUE)) quit(status=1) \
     }'
 
-COPY run_planscore_model.R /usr/local/lib/R/run_planscore_model.R
-COPY run-planscore-model.sh /usr/local/bin/run-planscore-model.sh
+COPY 2025/planscore_models_congress.R /usr/local/lib/R/planscore_models_congress.R
+COPY 2025/planscore_models_state_leg.R /usr/local/lib/R/planscore_models_state_leg.R
