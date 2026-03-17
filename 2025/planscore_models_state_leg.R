@@ -21,12 +21,12 @@ output.folder <- "XXXXXX" #DESIGNATE A LOCATION TO SAVE OUTPUT
 ##STATE LEG: LOAD AND FORMAT DATA##
 #state legislative outcome data, lower house
 setwd("https://raw.githubusercontent.com/PlanScore/Model-Generator/refs/heads/migurski/update-model-code-and-data/2025/")
-d.lower <- read_csv("statehouse_elections_imputations_2025.csv")[,-1] %>%
+d.lower <- read_csv("statehouse_elections_imputations_2026.csv")[,-1] %>%
   filter(cycle>=2011) %>%
   mutate(winner_dem=party_winner=="d",
          dpres=pres_dem_prop)
 #state legislative outcome data, upper house
-d.upper <- read_csv("statesenate_elections_imputations_2025.csv")[,-1] %>%
+d.upper <- read_csv("statesenate_elections_imputations_2026.csv")[,-1] %>%
   filter(cycle>=2011) %>%
   mutate(winner_dem=party_winner=="d",
          dpres=pres_dem_prop)
@@ -50,6 +50,10 @@ setwd(output.folder)
 d.leg <- read_csv("leg_2011_2024_crossval_cycles.csv") %>%
   filter(!is.na(incumb))
 start <- proc.time()
+
+#SAMPLE OUT OF THE FILE#
+d.leg <- sample_frac(d.leg, size=0.1) #sampling out 10%
+
 m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
               (1 + dpres_mn + incumb || stateabrev) +
               (1 + dpres_mn + incumb | cycle)), 
@@ -70,7 +74,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
+         warmup=20, iter=60, refresh=10, thin=16) #warmup and iter for number of cycles
 proc.time() - start
 saveRDS(m, "full_model_2025A_incumbency_stateleg.rds")
 
@@ -106,6 +110,9 @@ setwd(output.folder)
 d.leg <- read_csv("leg_2011_2024_crossval_cycles.csv") %>%
   filter(!is.na(incumb))
 
+#SAMPLE OUT OF THE FILE#
+d.leg <- sample_frac(d.leg, size=0.1) #sampling out 10%
+
 start <- proc.time()
 m <- brm(bf(dem_share_imputed ~ dpres_mn +
               (1 + dpres_mn || stateabrev) +
@@ -122,7 +129,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                  set_prior("student_t(3, 0.11, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
+         warmup=20, iter=60, refresh=10, thin=16) #warmup and iter for number of cycles
 proc.time() - start
 saveRDS(m, "full_model_2025A_openseat_stateleg.rds")
 
