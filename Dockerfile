@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
 # https://stackoverflow.com/questions/8671308/non-interactive-method-for-dpkg-reconfigure-tzdata
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true
@@ -14,11 +14,17 @@ RUN apt-get update -y \
 # Required packages for run_planscore_model.R
 RUN R -e 'require(devtools); \
     install_version("plyr", version="1.8.5"); \
+    if (!require("plyr")) quit(status=1); \
     install_version("tidyverse", version="1.3.0"); \
+    if (!require("tidyverse")) quit(status=1); \
     install_version("stringr", version="1.4.0"); \
+    if (!require("stringr")) quit(status=1); \
     install_version("arm", version="1.10-1"); \
+    if (!require("arm")) quit(status=1); \
     install_version("mvtnorm", version="1.0-7"); \
-    install_version("msm", version="1.6.8")'
+    if (!require("mvtnorm")) quit(status=1); \
+    install_version("msm", version="1.6.8"); \
+    if (!require("msm")) quit(status=1)'
 
 COPY run_planscore_model.R /usr/local/lib/R/run_planscore_model.R
 COPY run-planscore-model.sh /usr/local/bin/run-planscore-model.sh
