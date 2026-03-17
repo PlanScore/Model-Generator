@@ -7,24 +7,17 @@ RUN debconf-set-selections /etc/preseed.txt
 
 # http://sites.psu.edu/theubunturblog/installing-r-in-ubuntu/
 # https://stackoverflow.com/questions/45719942/how-to-install-tidyverse-on-ubuntu-16-04-and-17-04
+# Updated again 2026-03, now using devtools just as a way to shortcut later transitive dependencies
 RUN apt-get update -y \
  && apt-get install -y libssl-dev libxml2-dev libcurl4-openssl-dev \
         r-base r-base-dev r-cran-devtools
 
 # Required packages for run_planscore_model.R
-RUN R -e 'require(devtools); \
-    install_version("plyr", version="1.8.5"); \
-    if (!require("plyr")) quit(status=1); \
-    install_version("tidyverse", version="1.3.0"); \
-    if (!require("tidyverse")) quit(status=1); \
-    install_version("stringr", version="1.4.0"); \
-    if (!require("stringr")) quit(status=1); \
-    install_version("arm", version="1.10-1"); \
-    if (!require("arm")) quit(status=1); \
-    install_version("mvtnorm", version="1.0-7"); \
-    if (!require("mvtnorm")) quit(status=1); \
-    install_version("msm", version="1.6.8"); \
-    if (!require("msm")) quit(status=1)'
+RUN R -e '\
+    for (pkg in c("Rcpp", "plyr", "tidyverse", "stringr", "arm", "mvtnorm", "msm")) { \
+        install.packages(pkg, repos="https://cloud.r-project.org"); \
+        if (!require(pkg, character.only=TRUE)) quit(status=1) \
+    }'
 
 COPY run_planscore_model.R /usr/local/lib/R/run_planscore_model.R
 COPY run-planscore-model.sh /usr/local/bin/run-planscore-model.sh
