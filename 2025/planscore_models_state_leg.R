@@ -76,11 +76,11 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
          warmup=20, iter=60, refresh=10, thin=16) #warmup and iter for number of cycles
 proc.time() - start
-saveRDS(m, "full_model_2025A_incumbency_stateleg.rds")
+saveRDS(m, "full_model_2026A_incumbency_statelege.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
 setwd(output.folder)
-m <- readRDS("full_model_2025A_incumbency_stateleg.rds")
+m <- readRDS("full_model_2026A_incumbency_statelege.rds")
 
 #population level effects#
 cycle.select <- function(i, mat) {
@@ -99,8 +99,8 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025A-incumbency-stateleg.csv")
-write.csv(E, "E_matrix_full-2025A-incumbency-stateleg.csv")
+write.csv(round(C, 4), "C_matrix_full-2026A-incumbency-statelege.csv")
+write.csv(round(E, 4), "E_matrix_full-2026A-incumbency-statelege.csv")
 
 ##STATE LEG: SMALLER MODEL WITH PRES VOTE ONLY##
 ##This model is engaged on PlanScore when users choose to leave all seats open.##
@@ -131,11 +131,11 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
          warmup=20, iter=60, refresh=10, thin=16) #warmup and iter for number of cycles
 proc.time() - start
-saveRDS(m, "full_model_2025A_openseat_stateleg.rds")
+saveRDS(m, "full_model_2026A_openseat_statelege.rds")
 
 ##generating coefficient matrix of posterior samples for PlanScore##
 setwd(output.folder)
-m <- readRDS("full_model_2025A_openseat_stateleg.rds")
+m <- readRDS("full_model_2026A_openseat_statelege.rds")
 
 #population level effects#
 cycle.select <- function(i, mat) {
@@ -154,6 +154,6 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025A-openseat-stateleg.csv")
-write.csv(E, "E_matrix_full-2025A-openseat-stateleg.csv")
+write.csv(round(C, 4), "C_matrix_full-2026A-openseat-statelege.csv")
+write.csv(round(E, 4), "E_matrix_full-2026A-openseat-statelege.csv")
 

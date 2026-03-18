@@ -11,7 +11,7 @@ library(parallel)
 ##separate intercepts and coefficients for each election cycle that are part of ##
 ##each multilevel model.                                                        ##
 
-output.folder <- "XXXXXX" #DESIGNATE A LOCATION TO SAVE OUTPUT
+output.folder <- "/vol/" #DESIGNATE A LOCATION TO SAVE OUTPUT
 
 ##############################################
 ##CONGRESS: 2024 PRESIDENTIAL VOTE AVAILABLE##
@@ -108,8 +108,8 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025B-incumbency-congress.csv")
-write.csv(E, "E_matrix_full-2025B-incumbency-congress.csv")
+write.csv(round(C, 4), "C_matrix_full-2025B-incumbency-congress.csv")
+write.csv(round(E, 4), "E_matrix_full-2025B-incumbency-congress.csv")
 
 ##CONGRESS: YES 2024 PVOTE: SMALLER MODEL WITH PVOTE ONLY##
 ##This model is engaged on PlanScore when users choose to leave all seats open##
@@ -160,8 +160,8 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025B-openseat-congress.csv")
-write.csv(E, "E_matrix_full-2025B-openseat-congress.csv")
+write.csv(round(C, 4), "C_matrix_full-2025B-openseat-congress.csv")
+write.csv(round(E, 4), "E_matrix_full-2025B-openseat-congress.csv")
 
 ##################################################
 ##CONGRESS: 2024 PRESIDENTIAL VOTE NOT AVAILABLE##
@@ -258,8 +258,8 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025A-incumbency-congress.csv")
-write.csv(E, "E_matrix_full-2025A-incumbency-congress.csv")
+write.csv(round(C, 4), "C_matrix_full-2025A-incumbency-congress.csv")
+write.csv(round(E, 4), "E_matrix_full-2025A-incumbency-congress.csv")
 
 ##CONGRESS: NO 2024 PVOTE: SMALLER MODEL WITH PVOTE ONLY##
 ##This model is engaged on PlanScore when users choose to leave all seats open##
@@ -310,6 +310,6 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(C, "C_matrix_full-2025A-openseat-congress.csv")
-write.csv(E, "E_matrix_full-2025A-openseat-congress.csv")
+write.csv(round(C, 4), "C_matrix_full-2025A-openseat-congress.csv")
+write.csv(round(E, 4), "E_matrix_full-2025A-openseat-congress.csv")
 
