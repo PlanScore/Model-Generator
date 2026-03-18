@@ -14,7 +14,7 @@ RUN apt-get update -y \
 
 # Required packages for run_planscore_model.R
 RUN R -e '\
-    for (pkg in c("Rcpp", "tidyverse", "plyr", "parallel", "dplyr", "brms")) { \
+    for (pkg in c("Rcpp", "tidyverse", "plyr", "parallel", "dplyr", "BH", "brms")) { \
         install.packages(pkg, repos="https://cloud.r-project.org"); \
         if (!require(pkg, character.only=TRUE)) quit(status=1) \
     }'

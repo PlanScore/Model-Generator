@@ -12,7 +12,7 @@ library(parallel)
 ##over time are captured with separate random intercepts and coefficients ##
 ##for each election cycle.                                                ##
 
-output.folder <- "XXXXXX" #DESIGNATE A LOCATION TO SAVE OUTPUT
+output.folder <- "/vol/" #DESIGNATE A LOCATION TO SAVE OUTPUT
 
 ######################
 ##STATE LEGISLATURES##
@@ -32,7 +32,7 @@ d.upper <- read_csv("statesenate_elections_imputations_2026.csv")[,-1] %>%
          dpres=pres_dem_prop)
 
 d.leg <- rbind.fill(d.lower, d.upper) %>%
-  mutate(dpres_mn=dpres-mean(dpres)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.4949748
+  mutate(dpres_mn=dpres-mean(dpres, na.rm=TRUE)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.4949748
 
 setwd(output.folder)
 d.leg <- sample_frac(d.leg)
