@@ -82,8 +82,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
-         cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
+         cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
 proc.time() - start
 saveRDS(m, "full_model_2025B_incumbency_congress.rds")
 
@@ -135,7 +135,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                  set_prior("student_t(3, 0.07, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
          cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
+         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
 proc.time() - start
 saveRDS(m, "full_model_2025B_openseat_congress.rds")
 
@@ -233,7 +233,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
          cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
+         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
 proc.time() - start
 saveRDS(m, "full_model_2025A_incumbency_congress.rds")
 
@@ -285,7 +285,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                  set_prior("student_t(3, 0.07, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
          cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16)
+         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
 proc.time() - start
 saveRDS(m, "full_model_2025A_openseat_congress.rds")
 

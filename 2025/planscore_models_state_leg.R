@@ -74,7 +74,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
          cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16) #warmup and iter for number of cycles
+         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16) #warmup and iter for number of cycles
 proc.time() - start
 saveRDS(m, "full_model_2026A_incumbency_statelege.rds")
 
@@ -129,7 +129,7 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                  set_prior("student_t(3, 0.11, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
          cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=2000, iter=6000, refresh=10, thin=16) #warmup and iter for number of cycles
+         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16) #warmup and iter for number of cycles
 proc.time() - start
 saveRDS(m, "full_model_2026A_openseat_statelege.rds")
 
