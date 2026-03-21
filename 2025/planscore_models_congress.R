@@ -13,6 +13,13 @@ library(parallel)
 
 output.folder <- "/vol/" #DESIGNATE A LOCATION TO SAVE OUTPUT
 
+# Calculate parallelism
+nsims_target <- 1000
+thin_wanted <- 8
+warmup_needed <- 500
+cores_present <- detectCores()
+iter_calculated = ceiling(nsims_target * thin_wanted / cores_present) + warmup_needed
+
 ##############################################
 ##CONGRESS: 2024 PRESIDENTIAL VOTE AVAILABLE##
 ##############################################
@@ -82,8 +89,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
-         cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
+         cores=cores_present, chains=cores_present, control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=warmup_needed, iter=iter_calculated, refresh=10, thin=thin_wanted)
 proc.time() - start
 saveRDS(m, "full_model_2025B_incumbency_congress.rds")
 
@@ -134,8 +141,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.07, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
-         cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
+         cores=cores_present, chains=cores_present, control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=warmup_needed, iter=iter_calculated, refresh=10, thin=thin_wanted)
 proc.time() - start
 saveRDS(m, "full_model_2025B_openseat_congress.rds")
 
@@ -232,8 +239,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
-         cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
+         cores=cores_present, chains=cores_present, control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=warmup_needed, iter=iter_calculated, refresh=10, thin=thin_wanted)
 proc.time() - start
 saveRDS(m, "full_model_2025A_incumbency_congress.rds")
 
@@ -284,8 +291,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.07, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
-         cores=detectCores(), chains=4, control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16)
+         cores=cores_present, chains=cores_present, control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=warmup_needed, iter=iter_calculated, refresh=10, thin=thin_wanted)
 proc.time() - start
 saveRDS(m, "full_model_2025A_openseat_congress.rds")
 

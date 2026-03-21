@@ -14,6 +14,13 @@ library(parallel)
 
 output.folder <- "/vol/" #DESIGNATE A LOCATION TO SAVE OUTPUT
 
+# Calculate parallelism
+nsims_target <- 1000
+thin_wanted <- 8
+warmup_needed <- 500
+cores_present <- detectCores()
+iter_calculated = ceiling(nsims_target * thin_wanted / cores_present) + warmup_needed
+
 ######################
 ##STATE LEGISLATURES##
 ######################
@@ -73,8 +80,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn + incumb +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.02, 0.05)", class="sd",coef="incumb",
                            group="stateabrev")),
-         cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16) #warmup and iter for number of cycles
+         cores=cores_present, chains=cores_present, control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=warmup_needed, iter=iter_calculated, refresh=10, thin=thin_wanted)
 proc.time() - start
 saveRDS(m, "full_model_2026A_incumbency_statelege.rds")
 
@@ -128,8 +135,8 @@ m <- brm(bf(dem_share_imputed ~ dpres_mn +
                            group="stateabrev"),
                  set_prior("student_t(3, 0.11, 0.1)", class="sd",coef="dpres_mn",
                            group="stateabrev")),
-         cores=detectCores(), chains=detectCores(), control=list(adapt_delta=0.99999, max_treedepth=12),
-         warmup=ceiling(4*2000/detectCores()), iter=ceiling(4*6000/detectCores()), refresh=10, thin=16) #warmup and iter for number of cycles
+         cores=cores_present, chains=cores_present, control=list(adapt_delta=0.99999, max_treedepth=12),
+         warmup=warmup_needed, iter=iter_calculated, refresh=10, thin=thin_wanted)
 proc.time() - start
 saveRDS(m, "full_model_2026A_openseat_statelege.rds")
 
