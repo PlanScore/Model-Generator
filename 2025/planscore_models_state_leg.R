@@ -106,8 +106,8 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(round(C, 4), "C_matrix_full-2026A-incumbency-statelege.csv")
-write.csv(round(E, 4), "E_matrix_full-2026A-incumbency-statelege.csv")
+write.csv(round(C[, 1:nsims_target], 4), "C_matrix_full-2026A-incumbency-statelege.csv")
+write.csv(round(E[, 1:nsims_target], 4), "E_matrix_full-2026A-incumbency-statelege.csv")
 
 ##STATE LEG: SMALLER MODEL WITH PRES VOTE ONLY##
 ##This model is engaged on PlanScore when users choose to leave all seats open.##
@@ -161,6 +161,6 @@ ndists <- 500
 
 E <- sapply(1:nsims, function(i) rnorm(ndists, 0, sd=sigma)) #unexplained error matrix
 
-write.csv(round(C, 4), "C_matrix_full-2026A-openseat-statelege.csv")
-write.csv(round(E, 4), "E_matrix_full-2026A-openseat-statelege.csv")
+write.csv(round(C[, 1:nsims_target], 4), "C_matrix_full-2026A-openseat-statelege.csv")
+write.csv(round(E[, 1:nsims_target], 4), "E_matrix_full-2026A-openseat-statelege.csv")
 
