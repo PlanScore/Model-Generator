@@ -39,7 +39,7 @@ d.upper <- read_csv("statesenate_elections_imputations_2026.csv")[,-1] %>%
          dpres=pres_dem_prop)
 
 d.leg <- rbind.fill(d.lower, d.upper) %>%
-  mutate(dpres_mn=dpres-mean(dpres, na.rm=TRUE)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.4949748
+  mutate(dpres_mn=dpres-mean(dpres, na.rm=TRUE)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.4948475
 
 setwd(output.folder)
 d.leg <- sample_frac(d.leg)
