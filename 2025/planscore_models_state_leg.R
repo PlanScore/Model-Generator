@@ -32,13 +32,13 @@ d.lower <- read_csv("statehouse_elections_imputations_2026.csv")[,-1] %>%
   filter(cycle>=2011) %>%
   mutate(winner_dem=party_winner=="d",
          dpres=pres_dem_prop)
-#state legislative outcome data, upper house
-d.upper <- read_csv("statesenate_elections_imputations_2026.csv")[,-1] %>%
-  filter(cycle>=2011) %>%
-  mutate(winner_dem=party_winner=="d",
-         dpres=pres_dem_prop)
+# #state legislative outcome data, upper house
+# d.upper <- read_csv("statesenate_elections_imputations_2026.csv")[,-1] %>%
+#   filter(cycle>=2011) %>%
+#   mutate(winner_dem=party_winner=="d",
+#          dpres=pres_dem_prop)
 
-d.leg <- rbind.fill(d.lower, d.upper) %>%
+d.leg <- rbind.fill(d.lower) %>%
   mutate(dpres_mn=dpres-mean(dpres, na.rm=TRUE)) #mean-deviate pres vote for easier calculations; mean(dpres)=0.4948475
 
 setwd(output.folder)
